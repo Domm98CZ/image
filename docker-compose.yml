@@ -1,0 +1,12 @@
+services:
+  php:
+    build:
+      context: docker
+      args:
+        PHP_VERSION: "8.4"
+    image: domm98cz-image:php8.4
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    environment:
+      XDG_CACHE_HOME: /tmp/fontconfig
+    volumes:
+      - .:/app

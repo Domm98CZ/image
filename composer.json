@@ -1,0 +1,84 @@
+{
+    "name": "domm98cz/image",
+    "description": "Driver-agnostic image manipulation for PHP: GD and Imagick behind one immutable, fluent API, with animation, watermarking and optimization.",
+    "type": "library",
+    "keywords": [
+        "image",
+        "gd",
+        "imagick",
+        "resize",
+        "watermark",
+        "steganography",
+        "webp",
+        "avif",
+        "gif",
+        "psr-7"
+    ],
+    "homepage": "https://Domm.cz",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dominik Procházka",
+            "email": "domm98cz@gmail.com",
+            "homepage": "https://Domm.cz",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "domm98cz@gmail.com",
+        "docs": "https://github.com/Domm98CZ/image/blob/main/README.md"
+    },
+    "require": {
+        "php": ">=8.2 <8.6",
+        "ext-ctype": "*",
+        "ext-dom": "*",
+        "ext-mbstring": "*",
+        "ext-zlib": "*",
+        "psr/http-factory": "^1.1",
+        "psr/http-message": "^2.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.75",
+        "nyholm/psr7": "^1.8",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "phpunit/phpunit": "^11.5"
+    },
+    "suggest": {
+        "ext-gd": "Default driver; at least one of ext-gd or ext-imagick is required at runtime.",
+        "ext-imagick": "Needed for animated WebP, ICC color management and Imagick-only features; used automatically when it is the better driver for a step.",
+        "nyholm/psr7": "Any PSR-17 implementation works for toStream()/toResponse(); this is a small one."
+    },
+    "autoload": {
+        "psr-4": {
+            "Domm98CZ\\Image\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Domm98CZ\\Image\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "platform": {
+            "php": "8.2.0"
+        },
+        "sort-packages": true
+    },
+    "scripts": {
+        "test": "phpunit --testsuite unit",
+        "test:integration": "phpunit --testsuite integration",
+        "phpstan": "phpstan analyse --memory-limit=1G",
+        "cs": "php-cs-fixer check --diff",
+        "cs:fix": "php-cs-fixer fix",
+        "check": [
+            "@cs",
+            "@phpstan",
+            "@test",
+            "@test:integration"
+        ]
+    }
+}
