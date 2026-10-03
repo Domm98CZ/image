@@ -1,0 +1,2 @@
+drawn at 3x and shrunk to 960x540 on imagick, 44698 bytes written to /tmp/bar-chart.png
+white under the soft shadow beside the tallest bar became rgb(190, 190, 190)

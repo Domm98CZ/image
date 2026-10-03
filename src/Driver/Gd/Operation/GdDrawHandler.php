@@ -137,6 +137,12 @@ final readonly class GdDrawHandler implements GdOperationHandlerInterface
         imagesetthickness($image, $stroke->width);
         // GD anti-aliases only hairlines; wider strokes stay aliased (hence Support::Degraded).
         imageantialias($image, $stroke->width === 1 && $stroke->color->isOpaque());
-        $draw(GdColor::allocate($image, $stroke->color));
+        try {
+            $draw(GdColor::allocate($image, $stroke->color));
+        } finally {
+            // libgd fills polygons span by span with its line routine, so a leftover thickness would paint every span repeatedly.
+            imagesetthickness($image, 1);
+            imageantialias($image, false);
+        }
     }
 }

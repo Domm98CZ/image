@@ -61,6 +61,22 @@ abstract class DrawingSpotCheckContractTestCase extends TestCase
         self::assertEqualsWithDelta([4, 4, 35, 35], self::inkBox($image), 2);
     }
 
+    public function testATranslucentFillIsBlendedOnceWhateverStrokeWasDrawnBeforeIt(): void
+    {
+        $fill = Color::rgb(66, 133, 244)->withOpacity(0.16);
+        $square = [new Point(30, 10), new Point(50, 10), new Point(50, 30), new Point(30, 30)];
+
+        $image = $this->drawOnWhite(60, 50, static fn(Canvas $c) => $c
+            ->line(new Point(0, 45), new Point(59, 45), new Stroke(Color::black(), 6))
+            ->rectangle(new Rectangle(new Point(5, 10), new Dimensions(20, 20)), $fill)
+            ->polygon($square, $fill));
+
+        foreach ([new Point(15, 20), new Point(40, 20)] as $inside) {
+            $blended = $image->colorAt($inside);
+            self::assertEqualsWithDelta([225, 235, 253], [$blended->red, $blended->green, $blended->blue], 2);
+        }
+    }
+
     public function testTextSitsOnItsBaselineAtThePixelSize(): void
     {
         $font = $this->font(40);
