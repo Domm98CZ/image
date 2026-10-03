@@ -1,0 +1,2 @@
+text logo 306x48 at 60% in the bottom right corner -> /tmp/photo-signed.jpg
+drawn badge scaled to 20% of the width, multiplied in the top left corner -> /tmp/photo-badged.png

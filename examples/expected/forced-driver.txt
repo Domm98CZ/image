@@ -1,0 +1,3 @@
+auto     drawn on imagick
+gd       drawn on gd
+imagick  drawn on imagick

@@ -1,0 +1,4 @@
+source image held by gd
+reference prices   pixel step ran on gd         82.4 ms
+calibrated prices  pixel step ran on imagick    77.8 ms
+refused: Cost "degradedNanosPerPixel" must exceed every other cost, got 100 while "phpFallbackNanosPerPixel" is 150.

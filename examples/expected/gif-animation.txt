@@ -1,0 +1,2 @@
+/tmp/bounce.gif: 12 frames, 20861 bytes
+/tmp/bounce-small.gif: 160x70, 12 frames, plays 3 times, 480 ms per play, frames held by gd
