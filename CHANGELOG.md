@@ -26,5 +26,12 @@ Initial public release candidate. Nothing has shipped yet.
 - PSR-7 / PSR-17 interop for input streams and output responses.
 - Security-by-default input handling: byte caps, magic-byte format sniffing and a
   decompression-bomb guard ahead of any decode.
+- Line chart and bar chart examples (`examples/line-chart.php`, `examples/bar-chart.php`) showing supersampled
+  drawing, rotated text, translucent fills and a blended drop-shadow layer.
+
+### Fixed
+
+- GD: a translucent polygon filled after a thick stroke was blended several times over (after a 3 px stroke a
+  16% fill looked like 41%), because the stroke thickness stayed set; drawing now restores it after every stroke.
 
 [Unreleased]: https://github.com/Domm98CZ/image/commits/main

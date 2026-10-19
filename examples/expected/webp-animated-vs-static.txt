@@ -1,0 +1,5 @@
+static WebP:   lossy q80 4046 bytes, lossless 34824 bytes
+frames:        6, held by gd
+animated WebP: 13088 bytes, re-opened with 6 frames on imagick
+GD forced:     No available codec handles WebP animations (animated WebP needs ext-imagick).
+GD forced:     animated GIF instead, 90365 bytes

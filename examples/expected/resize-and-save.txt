@@ -1,0 +1,4 @@
+photo.jpg          1200x800    83787 bytes  /tmp/photo.jpg
+photo-600.jpg       600x400    16981 bytes  /tmp/photo-600.jpg
+photo-thumb.webp    300x300     3362 bytes  /tmp/photo-thumb.webp
+photo-sun.png       400x300    35086 bytes  /tmp/photo-sun.png

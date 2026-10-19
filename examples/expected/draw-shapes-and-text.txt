@@ -1,0 +1,2 @@
+drawn on imagick, 16072 bytes written to /tmp/shapes.png
+translucent blue stroke over the background: rgb(122, 162, 220)

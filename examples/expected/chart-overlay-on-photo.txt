@@ -1,0 +1,2 @@
+62425 bytes written to /tmp/chart-card.jpg
+photo rgb(65, 40, 80) under the translucent panel became rgb(219, 216, 223)

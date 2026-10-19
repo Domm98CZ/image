@@ -208,6 +208,11 @@ has them, so it draws the same placeholder there while Imagick draws the glyph. 
 1.2 em apart (1.2 x `Font::$size`, rotated along with the text) on every driver; for another line pitch draw each line
 with its own `text()` call.
 
+Charts need nothing beyond these primitives: [`examples/line-chart.php`](examples/line-chart.php) and
+[`examples/bar-chart.php`](examples/bar-chart.php) build them from lines, polygons, ellipses, rectangles and text.
+Because GD draws thick strokes and filled shapes with jagged edges (see the driver table below), both draw at three
+times the final size and shrink the result with `resize()`, which anti-aliases the edges on either driver.
+
 ## Analysis
 
 Read-only queries over the decoded pixels, never touched by any driver-specific handler:
@@ -317,6 +322,7 @@ wherever builds are known to differ, so the same code answers differently on Ima
 | Embedded ICC profile to sRGB | Degraded: the profile is ignored, so wide-gamut photos look muted and CMYK is wrong | Native when ImageMagick is built with lcms, Degraded otherwise |
 | Resize filters | `Nearest` or one resampled path (`Bilinear`, `Bicubic`, `Lanczos` render identically) | 1:1 `Imagick::FILTER_*` |
 | Drawing | Degraded: only hairlines are anti-aliased, thick strokes and filled shapes have jagged edges | Native anti-aliasing |
+| `blur()` of transparent pixels | Degraded: only the colour channels are blurred, alpha stays sharp, so a blurred drop shadow keeps hard edges; blur an opaque layer and blend it with `BlendMode::Multiply` instead, as `examples/bar-chart.php` does | Native |
 | Text outside the Basic Multilingual Plane (emoji) | placeholder glyph | drawn |
 | Blend modes | `Normal` native; the other separable modes run the PHP compositor over the overlay's area | Native operators, each probed once against the W3C formula; modes ImageMagick computes differently fall back to the PHP compositor |
 | `trim()` | PhpFallback (per-pixel scan) | Native |

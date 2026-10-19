@@ -1,0 +1,2 @@
+drawn at 3x and shrunk to 960x540 on imagick, 68334 bytes written to /tmp/line-chart.png
+where the two translucent areas overlap they blend: rgb(228, 217, 221)
