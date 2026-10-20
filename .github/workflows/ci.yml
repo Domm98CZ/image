@@ -67,7 +67,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.5'
-          extensions: gd, mbstring, dom, zlib, ctype
+          extensions: gd, mbstring, dom, zlib, ctype, :imagick
           coverage: none
 
       - name: Assert Imagick is absent
