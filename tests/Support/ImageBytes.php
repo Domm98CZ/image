@@ -205,17 +205,17 @@ final class ImageBytes
         return pack('N', 8 + strlen($body)) . $type . $body;
     }
 
-    private static function pngChunk(string $type, string $data): string
+    public static function pngChunk(string $type, string $data): string
     {
         return pack('N', strlen($data)) . $type . $data . pack('N', crc32($type . $data));
     }
 
-    private static function riff(string $chunks): string
+    public static function riff(string $chunks): string
     {
         return 'RIFF' . pack('V', 4 + strlen($chunks)) . 'WEBP' . $chunks;
     }
 
-    private static function riffChunk(string $fourCc, string $payload): string
+    public static function riffChunk(string $fourCc, string $payload): string
     {
         return $fourCc . pack('V', strlen($payload)) . $payload . (strlen($payload) % 2 === 1 ? "\0" : '');
     }

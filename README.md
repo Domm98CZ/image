@@ -136,7 +136,9 @@ Some details:
 - **`save()` is atomic.** It writes a temporary file next to the target and renames it, so readers never see
   half an image. An existing file keeps its permissions.
 - **Extensions are checked.** A path whose known extension contradicts the requested format
-  (`save('a.png', new JpegOutput())`) is refused, so no file is served with the wrong type.
+  (`save('a.png', new JpegOutput())`) is refused, so no file is served with the wrong type. An extension the
+  library does not know is accepted when you pass the output explicitly: `save('shell.php', new JpegOutput())`
+  writes a JPEG named `shell.php`. The path is yours to choose; never build it, or its extension, from user input.
 - **Encoder options:**
   - `JpegOutput(quality 1–100, progressive, background)`. The background replaces transparency.
   - `PngOutput(compressionLevel 0–9, keepAlphaChannel)`. A fully opaque image is written without an alpha
@@ -144,7 +146,8 @@ Some details:
   - `WebpOutput(quality, lossless)`.
   - `AvifOutput(quality, speed)`.
   - `GifOutput`.
-- **Metadata** is stripped on encode unless you add a metadata watermark.
+- **Metadata** is stripped on encode unless you add a metadata watermark. GD's JPEG encoder signs every file
+  with a `CREATOR: gd-jpeg` comment; the library removes it.
 
 ### Optimization and the smallest encoding
 
@@ -179,6 +182,17 @@ Optimizers run after encoding and before metadata watermarks, so they cannot str
 an output-size cap, and re-validation of the tool's output (format, dimensions, and for `GifsicleOptimizer`
 frame count) before trusting it - the external binary is treated as untrusted, same as any other input. All
 of them keep the original bytes if the tool's result is not smaller.
+
+`MetadataStripper` works on a whitelist. A JPEG keeps its codec segments, the JFIF header (without
+thumbnails), the ICC profile and Adobe's color transform; everything else goes, including segments between the
+scans of a progressive file and anything after the end-of-image marker. A PNG keeps its image and animation chunks
+plus the color chunks, with the ICC profile renamed to a neutral `ICC Profile`; a WebP keeps its image, alpha
+and animation chunks, inside animation frames too, and ends at the size its RIFF header declares. The ICC profile
+itself is kept byte for byte and can carry free text (description, copyright); pass
+`new MetadataStripper(keepColorProfile: false)` to drop it as well. GIF, AVIF and HEIC pass through unchanged.
+A truncated file, or a PNG with an unknown critical chunk, throws `CorruptedImageException`. Re-encoding through
+the library (`open()->save()`) drops metadata too and is the safer choice for untrusted uploads; the stripper is
+meant for files you encoded yourself.
 
 ## Pixels, drawing and text
 
@@ -368,6 +382,17 @@ one exists. The constructor enforces that much: every cost must be a non-negativ
   The `memory_limit` check (`checkMemoryLimit`) covers decoded input only: `create()`, results of upscaling
   operations and images taken over through `from()` are bounded by `maxWidth`/`maxHeight`/`maxPixels` alone
   (50 MP is about 200 MB on GD and about 400 MB on Imagick Q16).
+- **The memory estimate is 4 bytes per pixel for every frame plus two full copies**, since the output format
+  is not known at `open()` and the costliest one decides: GD writing an opaque PNG holds the decoded image, an
+  alpha-free copy and a whole-image row buffer, about 11.5 bytes per pixel. A 25 MP still is therefore
+  estimated at 300 MB: with `memory_limit=256M` it is refused with `LimitExceededException` (about 16 MP still
+  fits), with `384M` it opens. Lower `maxPixels` to match your `memory_limit` if you want the pixel limit, not
+  the memory check, to be the one that refuses.
+- **A truncated or damaged JPEG is decoded, not refused.** libjpeg fills the missing part with gray, and neither
+  GD nor Imagick reports it reliably (`imagecreatefromstring()` stays silent even with
+  `gd.jpeg_ignore_warning=0`). A missing end-of-image marker catches plain truncation only, and rejecting such
+  files would also refuse ones that browsers display, so the library does not guess. If you need it, check
+  for an end-of-image marker (`\xFF\xD9`) after the first start-of-scan yourself.
 - **Every length field in a byte-level parser is bounds-checked.** This covers the GIF container, JPEG
   segments, PNG/WebP chunks and AVIF boxes. Compressed PNG profiles are inflated with a cap.
 - **XMP parsing refuses DTDs and entities** (XXE, billion laughs) and never touches the network.
@@ -403,6 +428,10 @@ try {
     // anything else the library throws
 }
 ```
+
+Exception messages are written for logs, not for end users: they can contain file paths, offsets inside the
+input, and the native message of GD, Imagick or an external tool. Log `getMessage()`, and show users a text of
+your own chosen by exception class.
 
 ## Contributing / running tests
 

@@ -52,9 +52,11 @@ final readonly class InputGuard
         return new ValidatedInput($bytes, $header);
     }
 
-    // Every decoded frame plus one working copy for the pipeline run.
+    // Every decoded frame, one full copy (pipeline working image, JPEG flattening, PNG without alpha) and one more for
+    // codec buffers (libgd writes a PNG through a whole-image row buffer). The output format is not known yet, so this
+    // covers the worst case measured on GD, an opaque PNG written out at about 11.5 bytes per pixel.
     public static function estimateDecodeMemory(ImageHeader $header): int
     {
-        return ($header->frameCount + 1) * $header->canvas->pixelCount() * self::BYTES_PER_PIXEL;
+        return ($header->frameCount + 2) * $header->canvas->pixelCount() * self::BYTES_PER_PIXEL;
     }
 }

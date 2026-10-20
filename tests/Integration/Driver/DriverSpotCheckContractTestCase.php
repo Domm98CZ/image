@@ -161,6 +161,23 @@ abstract class DriverSpotCheckContractTestCase extends TestCase
         self::assertSame(Orientation::TopLeft, (new ExifOrientationReader())->read(new BinaryString($output->bytes), FormatName::Jpeg));
     }
 
+    public function testJpegOutputCarriesNoCommentOrExifSegment(): void
+    {
+        foreach ([false, true] as $progressive) {
+            $output = $this->factory->openBytes(GdFixtures::quadrantsPng(40, 20))->encode(new JpegOutput(progressive: $progressive));
+
+            $markers = [];
+            $bytes = new BinaryString($output->bytes);
+            for ($offset = 2; $bytes->uint8($offset + 1) !== 0xDA; $offset += 2 + $bytes->uint16BigEndian($offset + 2)) {
+                $markers[] = $bytes->uint8($offset + 1);
+            }
+
+            self::assertNotContains(0xFE, $markers);
+            self::assertNotContains(0xE1, $markers);
+            self::assertStringNotContainsString('CREATOR', $output->bytes);
+        }
+    }
+
     /** @return iterable<string, array{OutputFormatInterface}> */
     public static function outputs(): iterable
     {

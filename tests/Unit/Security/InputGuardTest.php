@@ -81,7 +81,7 @@ final class InputGuardTest extends TestCase
         $header = new ImageHeader(FormatName::Png, new Dimensions(1000, 1000));
         $estimate = InputGuard::estimateDecodeMemory($header);
 
-        self::assertSame(8_000_000, $estimate);
+        self::assertSame(12_000_000, $estimate);
 
         try {
             (new InputGuard(Limits::default()))->inspect(ImageBytes::png(1000, 1000), MemoryBudget::ofBytes($estimate - 1));
@@ -103,6 +103,6 @@ final class InputGuardTest extends TestCase
     {
         $header = new ImageHeader(FormatName::Gif, new Dimensions(10, 10), 5);
 
-        self::assertSame(6 * 100 * 4, InputGuard::estimateDecodeMemory($header));
+        self::assertSame(7 * 100 * 4, InputGuard::estimateDecodeMemory($header));
     }
 }
