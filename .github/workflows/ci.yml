@@ -53,6 +53,46 @@ jobs:
       - name: Integration tests
         run: vendor/bin/phpunit --testsuite integration
 
+  tests-gd-only:
+    name: GD only
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install fonts
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends fonts-dejavu-core
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: gd, mbstring, dom, zlib, ctype
+          coverage: none
+
+      - name: Assert Imagick is absent
+        run: |
+          php -r 'if (extension_loaded("imagick")) { echo "imagick must not be loaded"; exit(1); }'
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer downloads
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - run: composer update --no-interaction --no-progress
+
+      - name: Unit tests
+        run: vendor/bin/phpunit --testsuite unit
+
+      - name: Integration tests
+        run: vendor/bin/phpunit --testsuite integration
+
   static-analysis:
     timeout-minutes: 10
     runs-on: ubuntu-latest

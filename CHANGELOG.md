@@ -6,7 +6,22 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
-Initial public release candidate. Nothing has shipped yet.
+## [0.2.0] - 2026-10-19
+
+### Added
+
+- Line chart and bar chart examples (`examples/line-chart.php`, `examples/bar-chart.php`) showing supersampled
+  drawing, rotated text, translucent fills and a blended drop-shadow layer.
+- Expected output files for every script in `examples/` (`examples/expected/`).
+
+### Fixed
+
+- GD: a translucent polygon filled after a thick stroke was blended several times over (after a 3 px stroke a
+  16% fill looked like 41%), because the stroke thickness stayed set; drawing now restores it after every stroke.
+
+## [0.1.0] - 2026-09-30
+
+Initial public release.
 
 ### Added
 
@@ -26,12 +41,7 @@ Initial public release candidate. Nothing has shipped yet.
 - PSR-7 / PSR-17 interop for input streams and output responses.
 - Security-by-default input handling: byte caps, magic-byte format sniffing and a
   decompression-bomb guard ahead of any decode.
-- Line chart and bar chart examples (`examples/line-chart.php`, `examples/bar-chart.php`) showing supersampled
-  drawing, rotated text, translucent fills and a blended drop-shadow layer.
 
-### Fixed
-
-- GD: a translucent polygon filled after a thick stroke was blended several times over (after a 3 px stroke a
-  16% fill looked like 41%), because the stroke thickness stayed set; drawing now restores it after every stroke.
-
-[Unreleased]: https://github.com/Domm98CZ/image/commits/main
+[Unreleased]: https://github.com/Domm98CZ/image/compare/0.2.0...HEAD
+[0.2.0]: https://github.com/Domm98CZ/image/compare/0.1.0...0.2.0
+[0.1.0]: https://github.com/Domm98CZ/image/releases/tag/0.1.0
